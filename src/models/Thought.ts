@@ -1,69 +1,81 @@
-import { Schema, Types, model, type Document } from 'mongoose';
+import { Schema, model, type Document } from 'mongoose';
 
 interface IReaction extends Document {
-    reactionId: Schema.Types.ObjectId,
-    name: string,
-    score: number
+    reactionBody: string;
+    username: string;
+    createdAt: Date;
 }
 
 interface IThought extends Document {
-    first: string,
-    last: string,
-    github: string,
-    reactions: Schema.Types.ObjectId[]
+    thoughtText: string;
+    username: string;
+    createdAt: Date;
+    reactions: IReaction[];
 }
+
 
 const reactionSchema = new Schema<IReaction>(
     {
-        reactionId: {
-            type: Schema.Types.ObjectId,
-            default: () => new Types.ObjectId(),
-        },
-        name: {
+        reactionBody: {
             type: String,
             required: true,
-            maxlength: 50,
-            minlength: 4,
-            default: 'Unnamed reaction',
+            maxlength: 280,
         },
-        score: {
-            type: Number,
+        username: {
+            type: String,
             required: true,
-            default: () => Math.floor(Math.random() * (100 - 70 + 1) + 70),
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+            get: function (this: any) {
+                return this.get('createdAt') ? this.get('createdAt').toISOString() : null;
         },
     },
+    },
     {
-        timestamps: true,
-        _id: false
+        _id: false,
+        // Ensure getters are included when converting to JSON
+        toJSON: { getters: true},
     }
 );
 
-const studentSchema = new Schema<IThought>({
-    first: {
+const thoughtSchema = new Schema<IThought>(
+    {
+    thoughtText: {
         type: String,
         required: true,
-        max_length: 50,
+        minlength: 1,
+        maxlength: 280,
     },
-    last: {
+    username: {
         type: String,
         required: true,
-        max_length: 50,
     },
-    github: {
-        type: String,
-        required: true,
-        max_length: 50,
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        get: function (this: any) {
+            return this.get('createdAt') ? this.get('createdAt').toISOString() : null;
+        },
     },
     reactions: [reactionSchema],
 },
     {
         toJSON: {
+            virtuals: true,
             getters: true,
         },
         timestamps: true
     }
 );
 
-const Thought = model('Thought', studentSchema);
+// Create a virtual called `reactionCount`
+thoughtSchema.virtual('reactionCount').get(function (this: IThought) {
+    return this.reactions.length; // Return the length of the `reactions` array
+});
+
+// Creates the Thought model using the thoughtSchema
+const Thought = model<IThought>('Thought', thoughtSchema);
 
 export default Thought;
