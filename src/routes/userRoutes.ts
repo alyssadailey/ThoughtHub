@@ -76,5 +76,27 @@ router.put('/:userId', async (req: Request, res: Response) => {
             }
         });
 
+// DELETE /api/users/:userId - Delete a user by ID
+router.delete('/:userId', async (req: Request, res: Response) => {
+    try {
+        
+        const user = await User.findByIdAndDelete(req.params.userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        return res.status(200).json(user);
+
+     } catch (err) {
+        if (err instanceof Error) {
+            return res.status(500).json({ message: err.message });
+        } else {
+            return res.status(500).json({ message: 'An unknown error occurred' });
+        }
+    }
+});
+
+
 
 export default router;
