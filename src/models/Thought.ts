@@ -1,18 +1,10 @@
 import { Schema, model, type Document } from 'mongoose';
 
-interface IReaction extends Document {
+interface IReaction {
     reactionBody: string;
     username: string;
-    createdAt: Date;
+    createdAt: Schema.Types.Date;
 }
-
-interface IThought extends Document {
-    thoughtText: string;
-    username: string;
-    createdAt: Date;
-    reactions: IReaction[];
-}
-
 
 const reactionSchema = new Schema<IReaction>(
     {
@@ -26,19 +18,25 @@ const reactionSchema = new Schema<IReaction>(
             required: true,
         },
         createdAt: {
-            type: Date,
+            type: Schema.Types.Date,
             default: Date.now,
-            get: function (this: any) {
-                return this.get('createdAt') ? this.get('createdAt').toISOString() : null;
-        },
+            get: (timestamp: Date) => timestamp.toISOString(),
     },
     },
     {
         _id: false,
         // Ensure getters are included when converting to JSON
-        toJSON: { getters: true},
+        toJSON: { getters: true },
     }
 );
+
+interface IThought extends Document {
+    thoughtText: string;
+    username: string;
+    createdAt: Schema.Types.Date;
+    reactions: IReaction[];
+}
+
 
 const thoughtSchema = new Schema<IThought>(
     {
@@ -53,13 +51,14 @@ const thoughtSchema = new Schema<IThought>(
         required: true,
     },
     createdAt: {
-        type: Date,
+        type: Schema.Types.Date,
         default: Date.now,
-        get: function (this: any) {
-            return this.get('createdAt') ? this.get('createdAt').toISOString() : null;
-        },
+        get: (timestamp: Date) => timestamp.toISOString(),
     },
-    reactions: [reactionSchema],
+    reactions: {
+        type: [reactionSchema],
+        default:[],
+    },
 },
     {
         toJSON: {

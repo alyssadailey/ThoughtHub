@@ -1,5 +1,6 @@
 import express, { Request, Response} from 'express';
 import User from '../models/User.js';
+// import Thought from '../models/Thought.js';
 
 const router = express.Router();
 
@@ -17,13 +18,11 @@ try {
 }
 });
 
-// GET /api/users - Get all users
+// GET /api/users - GET ALL USERS
 router.get('/', async (_req: Request, res: Response) => {
     try{
-        const users = await User.find()
-        // UNCOMMENT WHEN THOUGHT ROUTES ARE SET UP
-        // .populate('thoughts')
-        .populate('friends');
+        const users = await User.find().populate('thoughts');
+
         res.status(200).json(users);
     } catch (err) {
         if (err instanceof Error) {
@@ -34,7 +33,7 @@ router.get('/', async (_req: Request, res: Response) => {
     }
 });
 
-// GET /api/users/:userId - Get a single user by ID
+// GET /api/users/:userId - GET A SINGLE USER BY ID
 router.get('/:userId', async (req: Request, res: Response) => {
     try{
         const user = await User.findById(req.params.userId)
@@ -54,7 +53,7 @@ router.get('/:userId', async (req: Request, res: Response) => {
     }
 });
 
-// PUT /api/users/:userId - Update a user by ID
+// PUT /api/users/:userId - UPDATE A USER BY ID
 router.put('/:userId', async (req: Request, res: Response) => {
     try {
                 const user = await User.findByIdAndUpdate(
@@ -76,10 +75,10 @@ router.put('/:userId', async (req: Request, res: Response) => {
             }
         });
 
-// DELETE /api/users/:userId - Delete a user by ID
+// DELETE /api/users/:userId - DELETE A USER BY ID
 router.delete('/:userId', async (req: Request, res: Response) => {
     try {
-        
+
         const user = await User.findByIdAndDelete(req.params.userId);
 
         if (!user) {
