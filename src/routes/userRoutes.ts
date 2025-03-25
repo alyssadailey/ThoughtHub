@@ -21,7 +21,10 @@ try {
 // GET /api/users - GET ALL USERS
 router.get('/', async (_req: Request, res: Response) => {
     try{
-        const users = await User.find().populate('thoughts');
+        const users = await User.find().populate({
+            path: 'thoughts',
+            select: '-__v'
+        });
 
         res.status(200).json(users);
     } catch (err) {
@@ -39,10 +42,15 @@ router.get('/:userId', async (req: Request, res: Response) => {
         const user = await User.findById(req.params.userId)
         // UNCOMMENT WHEN THOUGHT ROUTES ARE SET UP
         // .populate('thoughts')
-        .populate('friends');
+        .populate({
+            path: 'thoughts',
+            select: '-__v'
+        });
+
         if (!user) {
             res.status(404).json({ message: 'User not found' });
         }
+        
         res.status(200).json(user);
      } catch (err) {
         if (err instanceof Error) {
