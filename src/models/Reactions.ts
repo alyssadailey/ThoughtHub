@@ -2,7 +2,7 @@ import { Schema, Types, type Document } from 'mongoose';
 import { dateFormat } from '../utils/dateFormat.js';
 
 interface IReaction extends Document {
-    _id: Schema.Types.ObjectId;
+    reactionId: Schema.Types.ObjectId;
     reactionBody: string;
     username: string;
     createdAt: Schema.Types.Date;
@@ -10,7 +10,7 @@ interface IReaction extends Document {
 
 const reactionSchema = new Schema<IReaction>(
     {
-        _id: {
+        reactionId : {
             type: Schema.Types.ObjectId,
             default: () => new Types.ObjectId()
         },

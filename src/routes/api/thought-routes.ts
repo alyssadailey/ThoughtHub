@@ -25,8 +25,8 @@ router
   .post(addReaction);
 
 // /api/thoughts/:thoughtId/reactions/:reactionId !!!!!!!!!!!!!!!!!!!!!
-// router
-//   .route('/:thoughtId/reactions/:reactionId')
+router
+  .route('/:thoughtId/reactions/:reactionId')
 //   .delete(removeReaction);
 
 export default router;
