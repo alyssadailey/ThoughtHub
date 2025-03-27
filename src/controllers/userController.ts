@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { User } from '../models/index.js';
+import { User, Thought } from '../models/index.js';
 
 
 // GET /api/users - GETS ALL USERS
@@ -39,4 +39,40 @@ export const createUser = async (req: Request, res: Response) => {
       res.status(500).json(err);
     }
   };
+
+  //PUT /api/users/:userId - UPDATES A USER BY ID
+  export const updateUser = async (req: Request, res: Response) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.userId, req.body, {
+        new: true,
+        runValidators: true,
+      });
   
+      if (!user) {
+        return res.status(404).json({ message: 'No user with that ID' });
+      }
+  
+      return res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+      return;
+    }
+  };
+
+// DELETE /api/users/:userId - DELETES A USER BY ID
+
+export const deleteUser = async (req: Request, res: Response) => {
+    try {
+      const user = await User.findByIdAndDelete(req.params.userId);
+  
+      if (!user)
+        return res.status(404).json({ message: 'No user with that ID' });
+  
+      await Thought.deleteMany({ _id: { $in: user.thoughts } });
+  
+      return res.json({ message: 'User and thoughts deleted!' });
+    } catch (err) {
+      res.status(500).json(err);
+      return;
+    }
+  };
