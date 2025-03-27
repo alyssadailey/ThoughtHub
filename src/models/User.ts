@@ -1,12 +1,11 @@
-import { Schema, model, type Document, ObjectId } from 'mongoose';
+import { Schema, model, type Document } from 'mongoose';
 
-import mongoose from 'mongoose';
 
 
 interface IUser extends Document {
     username: string,
     email: string,
-    thoughts: ObjectId[],
+    thoughts: Schema.Types.ObjectId[],
     friends: Schema.Types.ObjectId[],
 }
 
@@ -26,7 +25,7 @@ const userSchema = new Schema<IUser>(
         },
         thoughts: [
             {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: 'Thought',
         },
     ],
