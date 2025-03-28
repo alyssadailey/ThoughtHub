@@ -76,3 +76,39 @@ export const deleteUser = async (req: Request, res: Response) => {
       return;
     }
   };
+
+  //POST- /api/users/:userId/friends/:friendId- add friend
+
+  export const addFriend = async (req: Request, res: Response) => {
+    try {
+      const user = await User.findByIdAndUpdate(
+        req.params.userId,
+        { $addToSet: { friends: req.params.friendId } },
+        { new: true }
+      );
+      if (!user)
+         return res.status(404).json({ message: 'No user with that ID' });
+      return res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+      return; 
+    }
+  };
+
+  //DELETE- /api/users/:userId/friends/:friendId- remove a friend
+
+  export const removeFriend = async (req: Request, res: Response) => {
+    try {
+      const user = await User.findByIdAndUpdate(
+        req.params.userId,
+        { $pull: { friends: req.params.friendId } },
+        { new: true }
+      );
+      if (!user)
+         return res.status(404).json({ message: 'No user with that ID' });
+      return res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+      return;
+    }
+  };

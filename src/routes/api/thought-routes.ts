@@ -1,17 +1,17 @@
 import { Router } from 'express';
 import { getAllThoughts, getThoughtById, createThought, updateThought, deleteThought, addReaction }
-//   addReaction, removeReaction
+//    removeReaction
    from '../../controllers/thoughtController.js';
 
 const router = Router();
 
-// /api/thoughts !!!!!!!!!!!!!!!!!!!!!
+// /api/thoughts 
 
 router.route('/')
 .get(getAllThoughts)
 .post(createThought);
 
-// /api/thoughts/:thoughtId !!!!!!!!!!!!!!!!!!!!!
+// /api/thoughts/:thoughtId 
 
 router
 .route('/:thoughtId')
@@ -19,12 +19,12 @@ router
 .put(updateThought)
 .delete(deleteThought);
 
-// /api/thoughts/:thoughtId/reactions !!!!!!!!!!!!!!!!!!!!!
+// /api/thoughts/:thoughtId/reactions 
 router
   .route('/:thoughtId/reactions')
   .post(addReaction);
 
-// /api/thoughts/:thoughtId/reactions/:reactionId !!!!!!!!!!!!!!!!!!!!!
+// /api/thoughts/:thoughtId/reactions/:reactionId 
 router
   .route('/:thoughtId/reactions/:reactionId')
 //   .delete(removeReaction);
