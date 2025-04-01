@@ -1,40 +1,41 @@
 import { Schema, model, type Document } from 'mongoose';
+import reactionSchema from './Reactions.js';
 
-interface IReaction {
-    reactionBody: string;
-    username: string;
-    createdAt: Schema.Types.Date;
-}
+// interface IReaction {
+//     reactionBody: string;
+//     username: string;
+//     createdAt: Schema.Types.Date;
+// }
 
-const reactionSchema = new Schema<IReaction>(
-    {
-        reactionBody: {
-            type: String,
-            required: true,
-            maxlength: 280,
-        },
-        username: {
-            type: String,
-            required: true,
-        },
-        createdAt: {
-            type: Schema.Types.Date,
-            default: Date.now,
-            get: (timestamp: Date) => timestamp.toISOString(),
-    },
-    },
-    {
-        _id: false,
-        // Ensure getters are included when converting to JSON
-        toJSON: { getters: true },
-    }
-);
+// const reactionSchema = new Schema<IReaction>(
+//     {
+//         reactionBody: {
+//             type: String,
+//             required: true,
+//             maxlength: 280,
+//         },
+//         username: {
+//             type: String,
+//             required: true,
+//         },
+//         createdAt: {
+//             type: Schema.Types.Date,
+//             default: Date.now,
+//             get: (timestamp: Date) => timestamp.toISOString(),
+//     },
+//     },
+//     {
+//         _id: false,
+//         // Ensure getters are included when converting to JSON
+//         toJSON: { getters: true },
+//     }
+// );
 
 interface IThought extends Document {
     thoughtText: string;
     username: string;
     createdAt: Schema.Types.Date;
-    reactions: IReaction[];
+    reactions: [typeof reactionSchema];
 }
 
 
@@ -55,10 +56,7 @@ const thoughtSchema = new Schema<IThought>(
         default: Date.now,
         get: (timestamp: Date) => timestamp.toISOString(),
     },
-    reactions: {
-        type: [reactionSchema],
-        default:[],
-    },
+    reactions: [reactionSchema]
 },
     {
         toJSON: {

@@ -5,7 +5,7 @@ import { User, Thought } from '../models/index.js';
 // GET /api/users - GETS ALL USERS
 export const getAllUsers = async (_req: Request, res: Response) => {
     try {
-      const users = await User.find().populate('thoughts').populate('friends');
+      const users = await User.find().populate({path: 'thoughts', populate: {path: 'reactions'}}).populate('friends');
       res.json(users);
     } catch (err) {
       res.status(500).json(err);
